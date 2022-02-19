@@ -1,42 +1,38 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import s from "./Searchform.module.css";
 
-export default class Searchform extends Component {
-  state = { name: "" };
-  onChengeValue = (e) => {
+export default function Searchform({ onSubmit }) {
+  const [name, setName] = useState("");
+  const onChengeValue = (e) => {
     const { value } = e.currentTarget;
-    this.setState({ name: value });
+    setName(value);
   };
-  handleSubmit = (evt) => {
-    const { name } = this.state;
+  const handleSubmit = (evt) => {
     evt.preventDefault();
-    this.props.onSubmit(name);
+    onSubmit(name);
   };
 
-  render() {
-    const { name } = this.state;
-    return (
-      <form className={s.Form} onSubmit={this.handleSubmit}>
-        <button
-          aria-label="Search button"
-          type="submit"
-          className={s.Form__Button}
-          disabled={this.state.name === ""}
-        >
-          <FaSearch size="2em" fill="#ccc" className={s.Button__icon} />
-        </button>
+  return (
+    <form className={s.Form} onSubmit={handleSubmit}>
+      <button
+        aria-label="Search button"
+        type="submit"
+        className={s.Form__Button}
+        disabled={name === ""}
+      >
+        <FaSearch size="2em" fill="#ccc" className={s.Button__icon} />
+      </button>
 
-        <input
-          className={s.Form__Input}
-          onChange={this.onChengeValue}
-          value={name}
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-      </form>
-    );
-  }
+      <input
+        className={s.Form__Input}
+        onChange={onChengeValue}
+        value={name}
+        type="text"
+        autoComplete="off"
+        autoFocus
+        placeholder="Search images and photos"
+      />
+    </form>
+  );
 }
