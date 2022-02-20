@@ -25,3 +25,9 @@ export default function Modal({ onClose, src }) {
     modalRoot
   );
 }
+// https://github.com/VikOrlovskiy/goit-react-hw-04-feedback
+// https://vikorlovskiy.github.io/goit-react-hw-04-feedback/
+// https://vikorlovskiy.github.io/goit-react-hw-04-phonebook/
+// https://github.com/VikOrlovskiy/goit-react-hw-04-phonebook
+// https://github.com/VikOrlovskiy/goit-react-hw-04-images
+// https://vikorlovskiy.github.io/goit-react-hw-04-images/

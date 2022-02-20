@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import Header from "./components/Header";
@@ -12,104 +12,98 @@ import Modal from "./components/Modal";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import "./App.css";
-export default class App extends Component {
-  state = {
-    pictures: [],
-    name: "",
-    page: 1,
-    showModal: false,
-    modalImage: "",
-    status: "idle",
-    error: "",
-    loadMore: false,
-  };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.name !== this.state.name) {
-      this.setState({ status: "pending" });
-      let value = getPictures(this.state.name);
+export default function App() {
+  const [pictures, setPictures] = useState([]);
+  const [name, setName] = useState("");
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModals] = useState(false);
+  const [modalImage, setModalImage] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [loadMore, setLoadMore] = useState(false);
+  useEffect(() => {
+    if (name !== "") {
+      let value = getPictures(name);
+      setStatus("pending");
       value
         .then((res) => {
-          const pictures = res.data;
+          const value = res.data;
           if (res.data.total === 0) {
-            this.setState({ loadMore: false });
+            setLoadMore(false);
             toast.error("Could not find images with that name");
           }
-          this.setState((prevState) => ({
-            pictures: pictures.hits,
-            page: prevState.page + 1,
-            status: "resolved",
-            loadMore: true,
-          }));
+          setPictures(value.hits);
+          setPage((prev) => prev + 1);
+          setStatus("resolved");
+          setLoadMore(true);
           if (res.data.hits.length < 12) {
-            this.setState({ loadMore: false });
+            setLoadMore(false);
           }
         })
-        .catch((error) => this.setState({ status: "rejected", error }));
+        .catch((error) => {
+          setStatus("rejected");
+          console.log(error);
+        });
     }
-  }
-  loadMore = () => {
-    const { page, name } = this.state;
+  }, [name]);
+  const onloadMore = () => {
     let value = getPictures(name, page);
-    value.then((res) => {
-      const pictures = res.data;
-      this.setState((prevState) => ({
-        pictures: [...prevState.pictures, ...pictures.hits],
-        page: prevState.page + 1,
-        loadMore: true,
-      }));
-      if (res.data.hits.length < 12) {
-        this.setState({ loadMore: false });
-      }
-    });
+    value
+      .then((res) => {
+        setStatus("pending");
+        const value = res.data;
+        setPictures((prev) => [...prev, ...value.hits]);
+        setPage((prev) => prev + 1);
+        setStatus("resolved");
+        setLoadMore(true);
+        if (res.data.hits.length < 12) {
+          setLoadMore(false);
+        }
+      })
+      .catch((error) => {
+        setStatus("rejected");
+        console.log(error);
+      });
   };
-  toglleModal = (e) => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-    if (!this.state.showModal) {
+  const toglleModal = (e) => {
+    setShowModals((prev) => !prev);
+    if (!showModal) {
       if (e) {
-        this.filtredLIst(e.target.parentNode.id);
+        filtredLIst(e.target.parentNode.id);
       }
     }
   };
-  filtredLIst = (id) => {
-    const { pictures } = this.state;
+  const filtredLIst = (id) => {
     let value = pictures.find((item) => item.id === Number(id));
-    this.setState({ modalImage: value.largeImageURL });
+    setModalImage(value.largeImageURL);
   };
-  findPicture = (pictureName) => {
-    if (pictureName !== this.state.name) {
-      this.setState({ name: pictureName, page: 1 });
-    }
+  const findPicture = (pictureName) => {
+    setName(pictureName);
+    setPage(1);
+    setLoadMore(false);
   };
-  render() {
-    const { pictures, status, modalImage, showModal, loadMore } = this.state;
-    return (
-      <div className="App">
-        <Header>
-          <Container>
-            <Searchform onSubmit={this.findPicture} />
-          </Container>
-        </Header>
-        <Main>
-          <Container>
-            {status === "idle" && <p>please enter name picture</p>}
-            {status === "pending" && (
-              <Rings
-                height="100"
-                width="100"
-                color="grey"
-                ariaLabel="loading"
-              />
-            )}
-            {status === "resolved" && (
-              <ImageGallery pictures={pictures} open={this.toglleModal} />
-            )}
-            {loadMore && <Button loag={this.loadMore} />}
-            {showModal && <Modal src={modalImage} onClose={this.toglleModal} />}
-          </Container>
-        </Main>
-        <ToastContainer />
-      </div>
-    );
-  }
+
+  return (
+    <div className="App">
+      <Header>
+        <Container>
+          <Searchform onSubmit={findPicture} />
+        </Container>
+      </Header>
+      <Main>
+        <Container>
+          {status === "idle" && <p>please enter name picture</p>}
+          {status === "pending" && (
+            <Rings height="100" width="100" color="grey" ariaLabel="loading" />
+          )}
+          {status === "resolved" && (
+            <ImageGallery pictures={pictures} open={toglleModal} />
+          )}
+          {loadMore && <Button loag={onloadMore} />}
+          {showModal && <Modal src={modalImage} onClose={toglleModal} />}
+        </Container>
+      </Main>
+      <ToastContainer />
+    </div>
+  );
 }
