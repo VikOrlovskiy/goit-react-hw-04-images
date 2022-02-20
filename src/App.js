@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Rings } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import Header from "./components/Header";

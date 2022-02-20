@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import PropTypes from "prop-types";
 import s from "./Modal.module.css";
 const modalRoot = document.querySelector("#modal-root");
 export default function Modal({ onClose, src }) {
@@ -25,9 +26,7 @@ export default function Modal({ onClose, src }) {
     modalRoot
   );
 }
-// https://github.com/VikOrlovskiy/goit-react-hw-04-feedback
-// https://vikorlovskiy.github.io/goit-react-hw-04-feedback/
-// https://vikorlovskiy.github.io/goit-react-hw-04-phonebook/
-// https://github.com/VikOrlovskiy/goit-react-hw-04-phonebook
-// https://github.com/VikOrlovskiy/goit-react-hw-04-images
-// https://vikorlovskiy.github.io/goit-react-hw-04-images/
+Modal.propTypes = {
+  src: PropTypes.string,
+  onClose: PropTypes.func,
+};

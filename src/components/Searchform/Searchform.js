@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import PropTypes from "prop-types";
 import s from "./Searchform.module.css";
-
 export default function Searchform({ onSubmit }) {
   const [name, setName] = useState("");
   const onChengeValue = (e) => {
@@ -36,3 +36,6 @@ export default function Searchform({ onSubmit }) {
     </form>
   );
 }
+Searchform.propTypes = {
+  onSubmit: PropTypes.func,
+};

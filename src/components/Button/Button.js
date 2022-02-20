@@ -14,5 +14,5 @@ export default function Button({ loag }) {
   );
 }
 Button.propTypes = {
-  deleteContact: PropTypes.func,
+  loag: PropTypes.func,
 };

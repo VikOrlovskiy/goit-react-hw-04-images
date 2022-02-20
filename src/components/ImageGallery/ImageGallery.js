@@ -1,7 +1,6 @@
-import s from "./ImageGallery.module.css";
-import GalleryItem from "../ImageGalleryItem";
 import PropTypes from "prop-types";
-
+import GalleryItem from "../ImageGalleryItem";
+import s from "./ImageGallery.module.css";
 export default function imageGallery({ pictures, open }) {
   return (
     <>
@@ -18,5 +17,6 @@ export default function imageGallery({ pictures, open }) {
   );
 }
 imageGallery.propTypes = {
-  id: PropTypes.number,
+  pictures: PropTypes.arrayOf(PropTypes.object),
+  open: PropTypes.func,
 };
