@@ -23,17 +23,16 @@ export default function App() {
   const [loadMore, setLoadMore] = useState(false);
   useEffect(() => {
     if (name !== "") {
-      let value = getPictures(name);
+      let value = getPictures(name, page);
       setStatus("pending");
       value
         .then((res) => {
           const value = res.data;
-          if (res.data.total === 0) {
+          if (value.total === 0) {
             setLoadMore(false);
             toast.error("Could not find images with that name");
           }
-          setPictures(value.hits);
-          setPage((prev) => prev + 1);
+          setPictures((prev) => [...prev, ...value.hits]);
           setStatus("resolved");
           setLoadMore(true);
           if (res.data.hits.length < 12) {
@@ -45,26 +44,11 @@ export default function App() {
           console.log(error);
         });
     }
-  }, [name]);
+  }, [name, page]);
   const onloadMore = () => {
-    let value = getPictures(name, page);
-    value
-      .then((res) => {
-        setStatus("pending");
-        const value = res.data;
-        setPictures((prev) => [...prev, ...value.hits]);
-        setPage((prev) => prev + 1);
-        setStatus("resolved");
-        setLoadMore(true);
-        if (res.data.hits.length < 12) {
-          setLoadMore(false);
-        }
-      })
-      .catch((error) => {
-        setStatus("rejected");
-        console.log(error);
-      });
+    setPage((prev) => prev + 1);
   };
+
   const toglleModal = (e) => {
     setShowModals((prev) => !prev);
     if (!showModal) {
@@ -80,9 +64,8 @@ export default function App() {
   const findPicture = (pictureName) => {
     setName(pictureName);
     setPage(1);
-    setLoadMore(false);
+    setPictures([]);
   };
-
   return (
     <div className="App">
       <Header>
