@@ -7,9 +7,13 @@ export default function imageGallery({ pictures, open }) {
       <ul className={s.gallery__list}>
         {pictures.map(({ webformatURL, tags, id }) => {
           return (
-            <li key={id} className={s.gallery__item} onClick={open}>
-              <GalleryItem userImageURL={webformatURL} tags={tags} id={id} />
-            </li>
+            <GalleryItem
+              key={id}
+              userImageURL={webformatURL}
+              tags={tags}
+              id={id}
+              open={open}
+            />
           );
         })}
       </ul>
